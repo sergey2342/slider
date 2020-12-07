@@ -28,7 +28,9 @@ class Slider {
     defaultSetting() {
         return {
             items: 1,
-            gap: 0
+            gap: 0,
+            autoplay: false,
+            playSpeed: 2000
         }
     }
 
@@ -76,7 +78,9 @@ class Slider {
         this.currentDotsF()
         this.onClickDotF()
         this.sliderTrack.addEventListener('mousedown', this.swipeStart)
-        this.sliderTrack.addEventListener('touchstart', this.swipeStart);
+        this.sliderTrack.addEventListener('touchstart', this.swipeStart)
+
+        this.setting.autoplay && this.startAutoplayF()
     }
 
     currentAmountPagesF(items) {
@@ -169,12 +173,12 @@ class Slider {
 
     onClickDotF() {
         this.sliderDots && this.sliderDots.addEventListener('click', e => {
-            if (e.target.tagName !== 'SPAN') return;
+            if (e.target.tagName !== 'SPAN') return
             let dots = document.querySelectorAll(`${this.a} .slider-dot`)
             dots.forEach(dot => {
                 dot.classList.remove('active')
                 if(dot === e.target) {
-                    this.sliderTrack.style.transition = '.5s ease all';
+                    this.sliderTrack.style.transition = '.5s ease all'
                     dot.classList.add('active')
                     this.currentPage = Number(dot.getAttribute('dot'))
 
@@ -196,18 +200,18 @@ class Slider {
 
     swipeStart = () => {
         if(this.currentSettingItems !== this.slides.length) {
-            this.sliderTrack.style.transition = '0s ease all';
+            this.sliderTrack.style.transition = '0s ease all'
             this.sliderTrack.style.cursor = 'grab'
             
             document.addEventListener('mousemove', this.swipeAction)
             document.addEventListener('mouseup', this.swipeEnd)
-            document.addEventListener('touchmove', this.swipeAction);
-            document.addEventListener('touchend', this.swipeEnd);
+            document.addEventListener('touchmove', this.swipeAction)
+            document.addEventListener('touchend', this.swipeEnd)
         }
     }
 
     swipeEnd = () => {
-        this.sliderTrack.style.transition = '.5s ease all';
+        this.sliderTrack.style.transition = '.5s ease all'
         this.sliderTrack.style.cursor = 'auto'
 
         if(this.currentPos > 0) {
@@ -242,8 +246,8 @@ class Slider {
 
         document.removeEventListener('mousemove', this.swipeAction)
         document.removeEventListener('mouseup', this.swipeEnd)
-        document.removeEventListener('touchmove', this.swipeAction);
-        document.removeEventListener('touchend', this.swipeEnd);
+        document.removeEventListener('touchmove', this.swipeAction)
+        document.removeEventListener('touchend', this.swipeEnd)
     }
 
     swipeAction = () => {
@@ -258,6 +262,20 @@ class Slider {
         } else {
             this.currentMouseX = mouseX
         }
+    }
+
+    startAutoplayF() {
+        let t = setInterval(() => {
+            this.sliderTrack.style.transition = '.5s ease all'
+            if(this.currentSlide === this.slides.length || this.currentSlide === this.slides.length - this.currentSettingItems + 1) {
+                this.currentSlide = 1
+                this.currentPage = 1
+            } else {
+                this.currentSlide++
+                this.currentPage++
+            }
+            this.updateSlider()
+        }, this.setting.playSpeed)
     }
 
     updateSlider() {
