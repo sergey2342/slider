@@ -30,7 +30,8 @@ class Slider {
             items: 1,
             gap: 0,
             autoplay: false,
-            playSpeed: 2000
+            playSpeed: 2000,
+            dots: true
         }
     }
 
@@ -75,11 +76,13 @@ class Slider {
         this.currentTrackWidthF()
         this.currentSettingItems = this.setting.items
         this.currentAmountPagesF(this.currentSettingItems)
-        this.currentDotsF()
-        this.onClickDotF()
         this.sliderTrack.addEventListener('mousedown', this.swipeStart)
         this.sliderTrack.addEventListener('touchstart', this.swipeStart)
 
+        if(this.setting.dots) {
+            this.currentDotsF()
+            this.onClickDotF()
+        }
         this.setting.autoplay && this.startAutoplayF()
     }
 
@@ -91,8 +94,10 @@ class Slider {
         this.currentWidthSlideF(w)
         this.currentTrackWidthF()
         this.currentAmountPagesF(this.currentSettingItems)
-        this.currentDotsF()
-        this.onClickDotF()
+        if(this.setting.dots) {
+            this.currentDotsF()
+            this.onClickDotF()
+        }
     }
 
     currentWindowSizeF() {
