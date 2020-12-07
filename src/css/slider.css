@@ -45,3 +45,8 @@
 .slider-dot.active {
     background: #141414;
 }
+
+.slider-dot.disabled {
+    display: none;
+    pointer-events: none;
+}

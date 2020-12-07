@@ -1,3 +1,5 @@
+'use strict'
+
 class Slider {
     constructor(a, b) {
         this.a = a
@@ -45,20 +47,24 @@ class Slider {
     }
 
     currentDotsF() {
-        let dots = document.createElement('div')
-        dots.classList.add('slider-dots')
-        this.currentDots = 0
+            let dots = document.createElement('div')
+            dots.classList.add('slider-dots')
+            this.currentDots = 0
+    
+            for(let i = 0; i < this.currentAmountPages; i++) {
+                let dot = document.createElement('span')
+                dot.classList.add('slider-dot')
+                if((i + 1) === this.currentPage) { dot.classList.add('active') }
+                dot.setAttribute('dot', i + 1)
+                dots.appendChild(dot)
+                this.currentDots = this.currentDots + 1
+            }
 
-        for(let i = 0; i < this.currentAmountPages; i++) {
-            let dot = document.createElement('span')
-            dot.classList.add('slider-dot')
-            if((i + 1) === this.currentPage) { dot.classList.add('active') }
-            dot.setAttribute('dot', i + 1)
-            dots.appendChild(dot)
-            this.currentDots = this.currentDots + 1
-        }
-        this.sliderDots.replaceWith(dots)
-        this.sliderDots = document.querySelector(`${this.a} .slider-dots`)
+            if(dots.children.length === 1)  dots.children[0].classList.add('disabled')
+
+            this.sliderDots.replaceWith(dots)
+            this.sliderDots = document.querySelector(`${this.a} .slider-dots`)
+
     }
 
     initSlides() {
@@ -90,8 +96,16 @@ class Slider {
             this.currentWindowSize = { width: window.innerWidth, height: window.innerHeight }
             this.updateSlidesF(this.currentSettingItems)
             this.updateSlidesOnPageF(window.innerWidth)
-            this.updateSlidePosF()
-            this.slideToF()
+
+            if(this.currentSlide > (this.slides.length - this.currentSettingItems) && this.currentSlide <= this.slides.length) {
+                this.updateSlidePosF(2)
+                const w = ((this.slides.length - this.currentSettingItems) * (this.currentSlideWidth + this.setting.gap))
+                this.currentPosF(-w)
+                this.currentSlide = this.slides.length - this.currentSettingItems + 1
+            } else {
+                this.updateSlidePosF()
+                this.slideToF()
+            }
         }
         window.addEventListener("resize", updateSlides)
         updateSlides()
@@ -115,7 +129,7 @@ class Slider {
 
     updateActiveDotF(currentPage) {
         let dots = document.querySelectorAll(`${this.a} .slider-dot`)
-        dots.forEach(dot => (Number(dot.getAttribute('dot')) === currentPage) ? dot.classList.add('active') : dot.classList.remove('active')) 
+        dots.forEach(dot => (Number(dot.getAttribute('dot')) === currentPage) ? dot.classList.add('active') : dot.classList.remove('active'))
     }
 
     currentPosF(w) {        
@@ -154,18 +168,25 @@ class Slider {
     }
 
     onClickDotF() {
-        this.sliderDots.addEventListener('click', e => {
+        this.sliderDots && this.sliderDots.addEventListener('click', e => {
             if (e.target.tagName !== 'SPAN') return;
             let dots = document.querySelectorAll(`${this.a} .slider-dot`)
             dots.forEach(dot => {
+                dot.classList.remove('active')
                 if(dot === e.target) {
                     this.sliderTrack.style.transition = '.5s ease all';
                     dot.classList.add('active')
                     this.currentPage = Number(dot.getAttribute('dot'))
-                    this.currentSlide = (Number(dot.getAttribute('dot')) * this.currentSettingItems - this.currentSettingItems + 1)
-                    this.slideToPageF(Number(dot.getAttribute('dot')))
-                } else {
-                    dot.classList.remove('active')
+
+                    if(Number(e.target.getAttribute('dot')) === this.currentAmountPages) {
+                        this.currentSlide = this.slides.length - this.currentSettingItems + 1
+                        this.slideToF()  //??
+                        const w = ((this.currentSlide - 1) * (this.currentSlideWidth + this.setting.gap))
+                        this.currentPosF(-w)
+                    } else {
+                        this.currentSlide = (Number(dot.getAttribute('dot')) * this.currentSettingItems - this.currentSettingItems + 1)
+                        this.slideToPageF(this.currentPage)
+                    }
                 }
             })
         })
@@ -174,13 +195,15 @@ class Slider {
     getEvent = () => window.event.type.search('touch') !== -1 ? window.event.touches[0] : window.event
 
     swipeStart = () => {
-        this.sliderTrack.style.transition = '0s ease all';
-        this.sliderTrack.style.cursor = 'grab'
-        
-        document.addEventListener('mousemove', this.swipeAction)
-        document.addEventListener('mouseup', this.swipeEnd)
-        document.addEventListener('touchmove', this.swipeAction);
-        document.addEventListener('touchend', this.swipeEnd);
+        if(this.currentSettingItems !== this.slides.length) {
+            this.sliderTrack.style.transition = '0s ease all';
+            this.sliderTrack.style.cursor = 'grab'
+            
+            document.addEventListener('mousemove', this.swipeAction)
+            document.addEventListener('mouseup', this.swipeEnd)
+            document.addEventListener('touchmove', this.swipeAction);
+            document.addEventListener('touchend', this.swipeEnd);
+        }
     }
 
     swipeEnd = () => {
@@ -190,17 +213,27 @@ class Slider {
         if(this.currentPos > 0) {
             this.slideToPageF(1)
         } else if((-this.currentPos + (this.currentSettingItems * (this.currentSlideWidth + this.setting.gap))) > this.currentSliderTrack) {
-            this.slideToPageF(this.currentAmountPages)
+            this.currentSlide = this.slides.length - this.currentSettingItems + 1
+            const w = ((this.currentSlide - 1) * (this.currentSlideWidth + this.setting.gap))
+            this.currentPosF(-w)
         } else if(this.currentMouseX2 > 30) {
-            this.currentSlide++
-            this.slideToF()
+                this.currentSlide++
+                const w = ((this.currentSlide - 1) * (this.currentSlideWidth + this.setting.gap))
+                this.currentPosF(-w)
+                if(this.currentSlide === this.slides.length - this.currentSettingItems + 1) {
+                    this.currentPage = this.currentAmountPages
+                }
         } else if(this.currentMouseX2 < -30) {
             this.currentSlide--
             this.slideToF()
         } else {
             this.slideToF()
         }
-        this.updateSlidePosF(2)
+
+        if(this.currentSlide !== this.slides.length - this.currentSettingItems + 1) {
+            this.updateSlidePosF(2)
+        } 
+
         this.updateActiveDotF(this.currentPage)
 
         this.currentScroll = 0

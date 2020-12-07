@@ -22,19 +22,19 @@
                         <div class="slider-track">
                             <div class="slide second-sliders-section-item">
                                 <div class="second-sliders-section-item-img"></div>
-                                <p class="second-sliders-section-item-title">Web & Mobile Apps</p>
+                                <p class="second-sliders-section-item-title">Web & Mobile Apps 1</p>
                                 <p class="second-sliders-section-item-text">Multipurpose assistance for online stores and offline retail businesses.</p>
                                 <a class="second-sliders-section-item-button btnb btnb-link">Read more</a>
                             </div>
                             <div class="slide second-sliders-section-item">
                                 <div class="second-sliders-section-item-img"></div>
-                                <p class="second-sliders-section-item-title">Web & Mobile Apps</p>
+                                <p class="second-sliders-section-item-title">Web & Mobile Apps 2</p>
                                 <p class="second-sliders-section-item-text">Multipurpose assistance for online stores and offline retail businesses.</p>
                                 <a class="second-sliders-section-item-button btnb btnb-link">Read more</a>
                             </div>
                             <div class="slide second-sliders-section-item">
                                 <div class="second-sliders-section-item-img"></div>
-                                <p class="second-sliders-section-item-title">Web & Mobile Apps</p>
+                                <p class="second-sliders-section-item-title">Web & Mobile Apps 3</p>
                                 <p class="second-sliders-section-item-text">Multipurpose assistance for online stores and offline retail businesses.</p>
                                 <a class="second-sliders-section-item-button btnb btnb-link">Read more</a>
                             </div>
@@ -47,9 +47,27 @@
     </div>
 
 
-    <script acync src="./js/slider.js"></script>
-    <script await type="text/javascript">
-        const slider = new Slider('#main-slider', { items: 3, gap: 15 })
+    <script src="./js/slider.js"></script>
+    <script type="text/javascript">
+        const slider = new Slider('#main-slider', 
+        { 
+            items: 3, 
+            gap: 15,
+            responsive: [
+                {
+                    breakpoint: 991,
+                    setting: {
+                        items: 2
+                    }
+                },
+                {
+                    breakpoint: 575,
+                    setting: {
+                        items: 1
+                    }
+                }
+            ] 
+        })
         slider.init()   
     </script>
 </body>
