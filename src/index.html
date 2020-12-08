@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/slider.css">
@@ -21,49 +23,32 @@
                     <div class="slider-list">
                         <div class="slider-track">
                             <div class="slide second-sliders-section-item">
-                                <div class="second-sliders-section-item-img"></div>
+                                <img src="./1.jpg" class="second-sliders-section-item-img" />
                                 <p class="second-sliders-section-item-title">Web & Mobile Apps 1</p>
                                 <p class="second-sliders-section-item-text">Multipurpose assistance for online stores and offline retail businesses.</p>
                                 <a class="second-sliders-section-item-button btnb btnb-link">Read more</a>
                             </div>
                             <div class="slide second-sliders-section-item">
-                                <div class="second-sliders-section-item-img"></div>
+                                <img src="./1.jpg" class="second-sliders-section-item-img" />
                                 <p class="second-sliders-section-item-title">Web & Mobile Apps 2</p>
                                 <p class="second-sliders-section-item-text">Multipurpose assistance for online stores and offline retail businesses.</p>
                                 <a class="second-sliders-section-item-button btnb btnb-link">Read more</a>
                             </div>
                             <div class="slide second-sliders-section-item">
-                                <div class="second-sliders-section-item-img"></div>
+                                <img src="./1.jpg" class="second-sliders-section-item-img" />
                                 <p class="second-sliders-section-item-title">Web & Mobile Apps 3</p>
                                 <p class="second-sliders-section-item-text">Multipurpose assistance for online stores and offline retail businesses.</p>
                                 <a class="second-sliders-section-item-button btnb btnb-link">Read more</a>
                             </div>
                             <div class="slide second-sliders-section-item">
-                                <div class="second-sliders-section-item-img"></div>
+                                <img src="./1.jpg" class="second-sliders-section-item-img" />
                                 <p class="second-sliders-section-item-title">Web & Mobile Apps 4</p>
-                                <p class="second-sliders-section-item-text">Multipurpose assistance for online stores and offline retail businesses.</p>
-                                <a class="second-sliders-section-item-button btnb btnb-link">Read more</a>
-                            </div>
-                            <div class="slide second-sliders-section-item">
-                                <div class="second-sliders-section-item-img"></div>
-                                <p class="second-sliders-section-item-title">Web & Mobile Apps 5</p>
-                                <p class="second-sliders-section-item-text">Multipurpose assistance for online stores and offline retail businesses.</p>
-                                <a class="second-sliders-section-item-button btnb btnb-link">Read more</a>
-                            </div>
-                            <div class="slide second-sliders-section-item">
-                                <div class="second-sliders-section-item-img"></div>
-                                <p class="second-sliders-section-item-title">Web & Mobile Apps 6</p>
-                                <p class="second-sliders-section-item-text">Multipurpose assistance for online stores and offline retail businesses.</p>
-                                <a class="second-sliders-section-item-button btnb btnb-link">Read more</a>
-                            </div>
-                            <div class="slide second-sliders-section-item">
-                                <div class="second-sliders-section-item-img"></div>
-                                <p class="second-sliders-section-item-title">Web & Mobile Apps 7</p>
                                 <p class="second-sliders-section-item-text">Multipurpose assistance for online stores and offline retail businesses.</p>
                                 <a class="second-sliders-section-item-button btnb btnb-link">Read more</a>
                             </div>
                         </div>
                     </div>
+                    <div class="slider-arrows"></div>
                     <div class="slider-dots"></div>
                 </div>
             </div>
@@ -77,8 +62,10 @@
         { 
             items: 3, 
             gap: 15,
-            autoplay: true,
-            dots: true,
+            dots: false,
+            arrows: true,
+            nextArrow: { slide: 'next', text: '<i class="fas fa-angle-right"></i>' } ,
+            prevArrow: { slide: 'prev', text: '<i class="fas fa-angle-left"></i>' } ,
             responsive: [
                 {
                     breakpoint: 991,

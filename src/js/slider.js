@@ -10,6 +10,7 @@ class Slider {
         this.sliderTrack = this.sliderList.children[0]
         this.slides = this.sliderTrack.children
         this.sliderDots = document.querySelector(`${this.a} .slider-dots`)
+        this.sliderArrows = document.querySelector(`${this.a} .slider-arrows`)
 
         this.currentWindowSize = { width: undefined, height: undefined }
         this.currentSlideWidth = 0
@@ -31,7 +32,11 @@ class Slider {
             gap: 0,
             autoplay: false,
             playSpeed: 2000,
-            dots: true
+            dots: true,
+            drag: false,
+            arrows: false,
+            nextArrow: { slide: 'next', text: 'Next' },
+            prevArrow: { slide: 'prev', text: 'Prev' }
         }
     }
 
@@ -72,18 +77,29 @@ class Slider {
 
     initSlides() {
         for(let slide of this.slides) slide.style.marginRight = `${this.setting.gap}px`
-        this.slides[this.slides.length - 1].style.margin = `0`
+        this.slides[this.slides.length - 1].style.marginRight = `0`
         this.currentTrackWidthF()
         this.currentSettingItems = this.setting.items
         this.currentAmountPagesF(this.currentSettingItems)
-        this.sliderTrack.addEventListener('mousedown', this.swipeStart)
-        this.sliderTrack.addEventListener('touchstart', this.swipeStart)
+
+        if(!this.slider.hasAttribute('draggable')) {
+            if(this.setting.drag) {
+                this.sliderTrack.addEventListener('mousedown', this.swipeStart)
+                this.sliderTrack.addEventListener('touchstart', this.swipeStart)
+            }
+            this.setting.autoplay && this.startAutoplayF()
+        } else {
+            this.setting.dots = true
+        }
 
         if(this.setting.dots) {
             this.currentDotsF()
             this.onClickDotF()
         }
-        this.setting.autoplay && this.startAutoplayF()
+
+        if(this.setting.arrows) {
+            this.currentArrowsF()
+        }
     }
 
     currentAmountPagesF(items) {
@@ -105,6 +121,9 @@ class Slider {
             this.currentWindowSize = { width: window.innerWidth, height: window.innerHeight }
             this.updateSlidesF(this.currentSettingItems)
             this.updateSlidesOnPageF(window.innerWidth)
+            if(this.setting.arrows) {
+                this.currentArrowsF()
+            }
 
             if(this.currentSlide > (this.slides.length - this.currentSettingItems) && this.currentSlide <= this.slides.length) {
                 this.updateSlidePosF(2)
@@ -283,12 +302,73 @@ class Slider {
         }, this.setting.playSpeed)
     }
 
+    currentArrowsF() {
+        if(this.currentSettingItems !== this.slides.length) {
+            this.sliderTrack.style.transition = '.5s ease all'
+
+            let arrows = document.createElement('div')
+            arrows.classList.add('slider-arrows')
+    
+            const slidersArrows = [this.setting.prevArrow, this.setting.nextArrow]
+    
+            slidersArrows.forEach(item => {
+                let arrow = document.createElement('span')
+                arrow.classList.add('slider-arrow')
+                arrow.setAttribute('slide', item.slide)
+                arrow.innerHTML = item.text
+                arrows.appendChild(arrow)
+            })
+     
+            this.sliderArrows.replaceWith(arrows)
+            this.sliderArrows = arrows
+    
+            this.sliderArrows.addEventListener('click', e => this.arrowsClickF(e))
+        } else {
+            let arrows = document.createElement('div')
+            arrows.classList.add('slider-arrows')
+            this.sliderArrows.replaceWith(arrows)
+            this.sliderArrows = arrows
+        }
+    }
+
+    arrowsClickF(e) {
+            if (e.target.tagName !== 'SPAN') return
+
+            let arrows = document.querySelectorAll(`${this.a} .slider-arrow`)
+            arrows.forEach(arrow => {
+                if(arrow === e.target) {
+                    if(arrow.getAttribute('slide') === 'next') {
+                        if(this.currentSlide === this.slides.length || this.currentSlide === this.slides.length - this.currentSettingItems + 1) {
+                            this.currentSlide = 1
+                            this.currentPage = 1
+                        } else {
+                            this.currentSlide++
+                            this.currentPage++
+                        }
+                    } else if(arrow.getAttribute('slide') === 'prev') {
+                        if(this.currentSlide === 1) {
+                            this.currentSlide = this.slides.length
+                            this.currentPage = this.currentAmountPages
+                        } else {
+                            this.currentSlide--
+                        }
+                    }
+                }
+            })
+            this.updateSlider()
+    }
+
     updateSlider() {
         this.currentWindowSizeF()
     }
 
     init() {
-        this.initSlides()  
+        (this.slider.hasAttribute('draggable')) && setInterval(() => {
+            this.initSlides()
+            this.updateSlider()
+        }, 2000)
+
+        this.initSlides()             
         this.updateSlider()
     }
 }
